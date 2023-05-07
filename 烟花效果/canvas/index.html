@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #canvas {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const context = canvas.getContext("2d");
+      const w = 3;
+      /* 创建圆的类 */
+      class Circle {
+        constructor(x, y, color, radius) {
+          // 圆位置
+          this.x = x;
+          this.y = y;
+          // 圆颜色
+          this.color = color;
+          // 圆大小
+          this.radius = radius;
+          // 移动速度
+          this.speed = 15;
+        }
+
+        draw() {
+          context.beginPath();
+          context.moveTo(this.x, this.y);
+          context.arc(
+            this.x,
+            this.y,
+            this.radius,
+            (Math.PI / 180) * 0,
+            (Math.PI / 180) * 360
+          );
+          context.fillStyle = this.color;
+          context.fill();
+          context.closePath();
+        }
+        move() {
+          this.y -= this.speed;
+          this.draw();
+        }
+      }
+      const circles = [];
+      function animation() {
+        // 概率生成新的小球
+        if (Math.random() < 0.9) {
+          circles.push(
+            new Circle(
+              Math.random() * window.innerWidth,
+              window.innerHeight,
+              `RGB(${Math.floor(Math.random() * 256)},${Math.floor(
+                Math.random() * 256
+              )},${Math.floor(Math.random() * 256)})`,
+              w
+            )
+          );
+        }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (const index in circles) {
+          circles[index].move();
+          if (circles[index].y < 0) {
+            circles.splice(index, 1);
+          }
+        }
+        requestAnimationFrame(animation);
+      }
+      animation();
+    </script>
+  </body>
+</html>
