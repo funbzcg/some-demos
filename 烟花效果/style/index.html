@@ -1,0 +1,66 @@
+<!--
+ * @Date: 2023-05-07 13:38:44
+ * @LastEditTime: 2023-05-07 14:22:07
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #star-bg {
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        position: relative;
+      }
+      .star {
+        border-radius: 4px;
+        position: absolute;
+        bottom: 0%;
+        animation: identifier 2s ease-in infinite;
+      }
+
+      @keyframes identifier {
+        100% {
+          bottom: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="star-bg"></div>
+    <script>
+      const starBg = document.getElementById("star-bg");
+
+      const domWidth = 4;
+
+      for (
+        let index = 0;
+        index < Math.floor(window.innerWidth / domWidth);
+        index++
+      ) {
+        const dom = document.createElement("div");
+        dom.className = "star";
+        dom.style.width = domWidth + "px";
+        dom.style.height = domWidth + "px";
+        dom.style.left = Math.floor(Math.random() * 100) + "%";
+        dom.style.animationDelay = Math.random() * 2 + "s";
+        dom.style.backgroundColor = `RGB(${Math.floor(
+          Math.random() * 256
+        )},${Math.floor(Math.random() * 256)},${Math.floor(
+          Math.random() * 256
+        )})`;
+        starBg.appendChild(dom);
+      }
+    </script>
+  </body>
+</html>
