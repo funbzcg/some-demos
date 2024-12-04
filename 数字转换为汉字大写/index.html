@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>金额转换为汉字大写</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      input,
+      button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+      #result {
+        font-size: 1.2em;
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>金额转换为汉字大写</h1>
+      <input type="text" id="amount" placeholder="请输入金额" />
+      <button onclick="convertToChinese()">转换</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      function convertToChinese() {
+        const amount = document.getElementById('amount').value;
+        const resultDiv = document.getElementById('result');
+        const chineseAmount = toChinese(amount);
+        resultDiv.textContent = chineseAmount;
+      }
+
+      function toChinese(num) {
+        const digitMap = [
+          '零',
+          '壹',
+          '贰',
+          '叁',
+          '肆',
+          '伍',
+          '陆',
+          '柒',
+          '捌',
+          '玖',
+        ];
+        const unitMap = ['', '拾', '佰', '仟'];
+        const largeUnitMap = ['', '万', '亿', '兆'];
+
+        if (num === '') return '';
+        num = parseFloat(num).toFixed(2);
+        const parts = num.split('.');
+        let integerPart = parts[0];
+        const decimalPart = parts[1];
+        let result = '';
+        // 处理整数部分
+        function processGroup(group) {
+          let groupResult = '';
+          for (let i = 0; i < group.length; i++) {
+            const digit = group[i];
+            const unitIndex = group.length - i - 1;
+
+            if (digit !== '0') {
+              groupResult += digitMap[digit] + unitMap[unitIndex];
+            } else if (
+              groupResult.length > 0 &&
+              groupResult[groupResult.length - 1] !== '零'
+            ) {
+              groupResult += '零';
+            }
+          }
+          return groupResult.replace(/零+/g, '零').replace(/零$/, '');
+        }
+        let groups = [];
+        while (integerPart.length > 0) {
+          groups.push(integerPart.slice(-4));
+          integerPart = integerPart.slice(0, -4);
+        }
+        console.log('🚀 ~ toChinese ~ groups:', groups);
+        let resultArr = [];
+        for (let i = 0; i < groups.length; i++) {
+          const groupResult = processGroup(groups[i]);
+          console.log('🚀 ~ toChinese ~ groupResult:', groupResult);
+          //  result += groupResult + largeUnitMap[i];
+          resultArr.push(groupResult + largeUnitMap[i]);
+        }
+        result = resultArr.reverse().join('');
+        console.log('🚀 ~ toChinese ~ result:', result);
+        result = result
+          .replace(/零+([万亿兆])/g, '$1')
+          .replace(/([万亿兆])零+/g, '$1')
+          .replace(/零+$/, '');
+        console.log('🚀 ~ toChinese ~ result:', result);
+        // 处理小数部分
+        if (decimalPart !== '00') {
+          result +=
+            '元' +
+            digitMap[decimalPart[0]] +
+            '角' +
+            digitMap[decimalPart[1]] +
+            '分';
+        } else {
+          result += '元整';
+        }
+        // 特殊处理开头的“零”
+        if (result.startsWith('零')) {
+          result = result.slice(1);
+        }
+        // 确保每个单位只出现一次
+        result = result.replace(/万零+/g, '万').replace(/亿零+/g, '亿');
+        return result;
+      }
+    </script>
+  </body>
+</html>
